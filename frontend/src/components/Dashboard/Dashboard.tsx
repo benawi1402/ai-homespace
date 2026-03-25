@@ -42,6 +42,13 @@ function Clock() {
           year: 'numeric',
         })}
       </span>
+      <button
+        className={styles.reloadBtn}
+        onClick={() => window.location.reload()}
+        aria-label="Reload page"
+      >
+        ↻
+      </button>
     </div>
   );
 }

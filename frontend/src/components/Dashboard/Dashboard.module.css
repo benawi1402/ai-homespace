@@ -21,6 +21,29 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+.reloadBtn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  line-height: 1;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms, background 150ms;
+  flex-shrink: 0;
+}
+
+.reloadBtn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+}
+
 .clockTime {
   font-size: 1.05rem;
   font-weight: 600;
