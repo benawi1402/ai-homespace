@@ -1,0 +1,51 @@
+version: '3.9'
+
+# NAS deployment file — no git required on the NAS.
+# Docker clones the repo from GitHub as part of the build.
+#
+# First deploy / update:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# The --build flag makes Docker re-clone from GitHub and rebuild the images.
+# Run it whenever you want to deploy the latest version from main.
+
+services:
+  backend:
+    build:
+      context: https://github.com/benawi1402/ai-homespace.git#main:backend
+      dockerfile: Dockerfile
+    image: homespace-backend
+    container_name: homespace-backend
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3001:3001"
+    volumes:
+      - /volume1/docker/homespace/data:/app/data
+    networks:
+      - homespace
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build:
+      context: https://github.com/benawi1402/ai-homespace.git#main:frontend
+      dockerfile: Dockerfile
+    image: homespace-frontend
+    container_name: homespace-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - homespace
+
+networks:
+  homespace:
+    driver: bridge
