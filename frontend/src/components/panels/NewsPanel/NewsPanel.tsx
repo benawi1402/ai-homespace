@@ -63,18 +63,6 @@ export default function NewsPanel() {
     [visiblePosts.length],
   );
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (visiblePosts.length < 2) return;
-    setCurrentIndex((i) => (i - 1 + visiblePosts.length) % visiblePosts.length);
-  };
-
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (visiblePosts.length < 2) return;
-    setCurrentIndex((i) => (i + 1) % visiblePosts.length);
-  };
-
   if (isLoading) return <span className={styles.meta}>Loading…</span>;
   if (error || !data) return <span className={styles.meta}>Unavailable</span>;
   if (!current) return <span className={styles.meta}>No posts</span>;
@@ -101,6 +89,7 @@ export default function NewsPanel() {
             className={[styles.stackItem, i > 0 ? styles.stackSep : '']
               .filter(Boolean)
               .join(' ')}
+            onClick={() => setCurrentIndex(i)}
           >
             {post.imageUrl && (
               <img
@@ -121,25 +110,15 @@ export default function NewsPanel() {
     );
   }
 
-  // ── Expanded / Gallery ─────────────────────────────────────────────────────
+  // ── Expanded / Detail view ────────────────────────────────────────────────
   return (
     <div
-      className={styles.gallery}
+      className={styles.focusedLayout}
       onClick={(e) => e.stopPropagation()}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Previous arrow */}
-      <button
-        className={styles.arrow}
-        onClick={handlePrev}
-        disabled={visiblePosts.length < 2}
-        aria-label="Previous article"
-      >
-        ‹
-      </button>
-
-      {/* Card */}
+      {/* Main card */}
       <div className={styles.card}>
         {current.imageUrl && (
           <div className={styles.imageWrap}>
@@ -170,30 +149,33 @@ export default function NewsPanel() {
         </div>
       </div>
 
-      {/* Next arrow */}
-      <button
-        className={styles.arrow}
-        onClick={handleNext}
-        disabled={visiblePosts.length < 2}
-        aria-label="Next article"
-      >
-        ›
-      </button>
-
-      {/* Progress dots */}
-      <div className={styles.dotsBottom}>
-        {visiblePosts.slice(0, 10).map((_, i) => (
-          <button
-            key={i}
-            className={[styles.dot, i === safeIdx ? styles.dotActive : '']
+      {/* Sidebar: switch between posts */}
+      <div className={styles.sidebar}>
+        {visiblePosts.map((post, i) => (
+          <div
+            key={post.id}
+            className={[
+              styles.sidebarItem,
+              i === safeIdx ? styles.sidebarItemActive : '',
+              i > 0 ? styles.sidebarSep : '',
+            ]
               .filter(Boolean)
               .join(' ')}
-            onClick={(e) => {
-              e.stopPropagation();
-              setCurrentIndex(i);
-            }}
-            aria-label={`Go to article ${i + 1}`}
-          />
+            onClick={(e) => { e.stopPropagation(); setCurrentIndex(i); }}
+          >
+            {post.imageUrl && (
+              <img
+                className={styles.sidebarThumb}
+                src={post.imageUrl}
+                alt=""
+                loading="lazy"
+              />
+            )}
+            <div className={styles.sidebarText}>
+              <span className={styles.sidebarSource}>{post.source}</span>
+              <span className={styles.sidebarTitle}>{post.title}</span>
+            </div>
+          </div>
         ))}
       </div>
     </div>
