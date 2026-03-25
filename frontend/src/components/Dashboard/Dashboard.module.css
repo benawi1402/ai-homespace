@@ -7,7 +7,7 @@
   height: 100vh;
   background: var(--color-bg);
   overflow: hidden;
-  padding: var(--corner-safe);
+  padding: var(--corner-safe-y) var(--corner-safe-x);
 }
 
 /* ── Clock / status bar ─────────────────────────────────────────────────────── */
