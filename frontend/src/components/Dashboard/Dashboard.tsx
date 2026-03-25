@@ -1,7 +1,7 @@
 import { useEffect, useState, type FC } from 'react';
 import { usePanelConfig } from '../../hooks/usePanelConfig';
 import { useDashboardStore } from '../../store/dashboardStore';
-import { useTheme, THEME_META, THEMES } from '../../hooks/useTheme';
+import { useTheme, THEME_META, THEMES, type Theme } from '../../hooks/useTheme';
 import PanelWrapper from '../PanelWrapper/PanelWrapper';
 import WeatherPanel from '../panels/WeatherPanel/WeatherPanel';
 import MailPanel from '../panels/MailPanel/MailPanel';
@@ -21,6 +21,35 @@ const PANEL_COMPONENTS: Record<PanelConfig['type'], FC> = {
   news: NewsPanel,
   custom: () => <div className={styles.placeholder}>Custom panel</div>,
 };
+
+function ThemeIcon({ theme }: { theme: Theme }) {
+  if (theme === 'space') return (
+    <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <circle cx="8" cy="8" r="3.5" />
+      <ellipse cx="8" cy="8" rx="7" ry="2.3" fill="none" stroke="currentColor" strokeWidth="1.3" transform="rotate(-25 8 8)" />
+    </svg>
+  );
+  if (theme === 'dark') return (
+    <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M13 9.5A5.5 5.5 0 1 1 6.5 3a4 4 0 1 0 6.5 6.5z" />
+    </svg>
+  );
+  return (
+    <svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="8" cy="8" r="3" fill="currentColor" />
+      <g stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+        <line x1="8" y1="1" x2="8" y2="3.5" />
+        <line x1="8" y1="12.5" x2="8" y2="15" />
+        <line x1="1" y1="8" x2="3.5" y2="8" />
+        <line x1="12.5" y1="8" x2="15" y2="8" />
+        <line x1="3.1" y1="3.1" x2="4.9" y2="4.9" />
+        <line x1="11.1" y1="11.1" x2="12.9" y2="12.9" />
+        <line x1="12.9" y1="3.1" x2="11.1" y2="4.9" />
+        <line x1="4.9" y1="11.1" x2="3.1" y2="12.9" />
+      </g>
+    </svg>
+  );
+}
 
 function Clock() {
   const [now, setNow] = useState(new Date());
@@ -52,7 +81,7 @@ function Clock() {
         aria-label={`Switch to ${THEME_META[nextTheme].label} theme`}
         title={`Switch to ${THEME_META[nextTheme].label} theme`}
       >
-        {THEME_META[theme].icon}
+        <ThemeIcon theme={theme} />
       </button>
       <button
         className={styles.reloadBtn}

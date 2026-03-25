@@ -4,10 +4,10 @@ export type Theme = 'space' | 'dark' | 'light';
 
 export const THEMES: Theme[] = ['space', 'dark', 'light'];
 
-export const THEME_META: Record<Theme, { icon: string; label: string }> = {
-  space: { icon: '🪐', label: 'Space' },
-  dark:  { icon: '🌑', label: 'Dark'  },
-  light: { icon: '☀️', label: 'Light' },
+export const THEME_META: Record<Theme, { label: string }> = {
+  space: { label: 'Space' },
+  dark:  { label: 'Dark'  },
+  light: { label: 'Light' },
 };
 
 const STORAGE_KEY = 'homespace-theme';
