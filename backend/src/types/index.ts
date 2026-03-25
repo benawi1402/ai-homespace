@@ -59,7 +59,7 @@ export interface HomeControlData {
 
 export interface PanelConfig {
   id: string;
-  type: 'mail' | 'weather' | 'home-control' | 'news' | 'custom';
+  type: 'mail' | 'weather' | 'home-control' | 'news' | 'calendar' | 'custom';
   title: string;
   order: number;
   enabled: boolean;
@@ -82,5 +82,21 @@ export interface NewsPost {
 
 export interface NewsData {
   posts: NewsPost[];
+  updatedAt: string;
+}
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;        // ISO dateTime or YYYY-MM-DD for all-day
+  end: string;
+  allDay: boolean;
+  calendarId: string;
+  calendarName: string;
+  color: string;        // hex color for visual differentiation
+}
+
+export interface CalendarData {
+  events: CalendarEvent[];
   updatedAt: string;
 }

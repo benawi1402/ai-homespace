@@ -7,6 +7,7 @@ import WeatherPanel from '../panels/WeatherPanel/WeatherPanel';
 import MailPanel from '../panels/MailPanel/MailPanel';
 import HomeControlPanel from '../panels/HomeControlPanel/HomeControlPanel';
 import NewsPanel from '../panels/NewsPanel/NewsPanel';
+import CalendarPanel from '../panels/CalendarPanel/CalendarPanel';
 import type { PanelConfig } from '../../types';
 import styles from './Dashboard.module.css';
 
@@ -19,6 +20,7 @@ const PANEL_COMPONENTS: Record<PanelConfig['type'], FC> = {
   mail: MailPanel,
   'home-control': HomeControlPanel,
   news: NewsPanel,
+  calendar: CalendarPanel,
   custom: () => <div className={styles.placeholder}>Custom panel</div>,
 };
 

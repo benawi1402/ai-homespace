@@ -121,6 +121,14 @@ Repeat the block with `MAIL2_` prefix for a second account. Both are optional.
 | `OPENAI_API_KEY` | — | Optional — enables AI relevance ranking of headlines |
 | `OPENAI_MODEL` | `gpt-4o-mini` | OpenAI model to use for ranking |
 
+### Google Calendar
+
+| Variable | Default | Description |
+|---|---|---|
+| `GCAL_CREDENTIALS_FILE` | — | Absolute path to a Google service account JSON credentials file |
+| `GCAL_CALENDAR_IDS` | `primary` | Comma-separated list of calendar IDs to fetch |
+| `GCAL_CACHE_TTL` | `300` | Cache lifetime in seconds |
+
 ### Server
 
 | Variable | Default | Description |
@@ -137,6 +145,28 @@ Repeat the block with `MAIL2_` prefix for a second account. Both are optional.
 |---|---|
 | `3000` | Frontend (Nginx) |
 | `3001` | Backend API |
+
+---
+
+## Google Calendar Setup
+
+The calendar panel uses a **Google service account** so no browser OAuth flow is needed — it works headlessly on a kiosk.
+
+**One-time setup (≈5 minutes):**
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/) and create a new project (or use an existing one).
+2. Enable the **Google Calendar API** (APIs & Services → Enable APIs → search "Calendar").
+3. Create a **Service Account** (APIs & Services → Credentials → Create Credentials → Service Account). Download the JSON key file.
+4. In **Google Calendar**, open the settings for each calendar you want to display → "Share with specific people" → add the service account's email address (ends in `@...iam.gserviceaccount.com`) with "See all event details" permission.
+5. Copy the JSON key file to your server (e.g. `/volume1/docker/homespace/data/google-credentials.json`).
+6. Set in your `.env`:
+   ```
+   GCAL_CREDENTIALS_FILE=/app/data/google-credentials.json
+   GCAL_CALENDAR_IDS=primary,your.other.calendar@gmail.com
+   ```
+7. Make sure the credentials file is accessible inside the container. With the default compose setup, the `/volume1/docker/homespace/data` volume is already mounted at `/app/data`, so placing the file there is all you need.
+
+The panel is hidden automatically when `GCAL_CREDENTIALS_FILE` is not set.
 
 ---
 

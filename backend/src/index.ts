@@ -6,6 +6,7 @@ import mailRoutes from './routes/mail';
 import homeControlRoutes from './routes/homeControl';
 import panelRoutes from './routes/panels';
 import newsRoutes from './routes/news';
+import calendarRoutes from './routes/calendar';
 
 async function main() {
   const fastify = Fastify({
@@ -21,6 +22,7 @@ async function main() {
   await fastify.register(homeControlRoutes);
   await fastify.register(panelRoutes);
   await fastify.register(newsRoutes);
+  await fastify.register(calendarRoutes);
 
   fastify.get('/health', async () => ({
     status: 'ok',

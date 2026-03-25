@@ -1,0 +1,132 @@
+/* ── Shared ───────────────────────────────────────────────────────────────── */
+.meta {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  align-self: center;
+}
+
+.empty {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  padding: 8px 0;
+}
+
+/* ── Collapsed ────────────────────────────────────────────────────────────── */
+.collapsed {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.collapsedHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.dateLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-transform: capitalize;
+}
+
+.eventCount {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}
+
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+}
+
+/* ── Event row ────────────────────────────────────────────────────────────── */
+.eventRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.eventRowCompact {
+  min-height: 20px;
+}
+
+.colorDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.eventTime {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  min-width: 46px;
+}
+
+.eventTitle {
+  font-size: 0.75rem;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+/* ── Expanded ─────────────────────────────────────────────────────────────── */
+.expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.dayGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dayHeader {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dayHeaderToday {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.dayEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 4px;
+}
+
+/* expanded rows are slightly larger */
+.expanded .eventTime {
+  font-size: 0.75rem;
+  min-width: 52px;
+}
+
+.expanded .eventTitle {
+  font-size: 0.8rem;
+}

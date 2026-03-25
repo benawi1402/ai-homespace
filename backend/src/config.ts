@@ -57,4 +57,13 @@ export const config = {
   },
 
   dataDir: process.env.DATA_DIR ?? '/app/data',
+
+  gcal: {
+    credentialsFile: process.env.GCAL_CREDENTIALS_FILE ?? '',
+    calendarIds: (process.env.GCAL_CALENDAR_IDS ?? 'primary')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
+    cacheTtl: parseInt(process.env.GCAL_CACHE_TTL ?? '300', 10),
+  },
 };

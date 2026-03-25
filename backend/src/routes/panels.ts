@@ -20,6 +20,8 @@ function isAvailable(type: PanelConfig['type']): boolean {
       return Boolean(config.hass.url && config.hass.token);
     case 'news':
       return true; // public RSS feeds — no credentials required
+    case 'calendar':
+      return Boolean(config.gcal.credentialsFile);
     case 'custom':
       return true;
   }
@@ -40,6 +42,7 @@ const defaultConfig: DashboardConfig = {
       flexExpanded: 3,
     },
     { id: 'news', type: 'news', title: 'News', order: 3, enabled: true, flexExpanded: 5 },
+    { id: 'calendar', type: 'calendar', title: 'Calendar', order: 4, enabled: true, flexExpanded: 3 },
   ],
 };
 
