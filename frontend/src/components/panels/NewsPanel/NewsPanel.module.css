@@ -1,0 +1,245 @@
+/* ── Shared ─────────────────────────────────────────────────────────────────── */
+.meta {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+/* ── Dot indicators ──────────────────────────────────────────────────────────── */
+.dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-border);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 200ms, transform 200ms;
+  flex-shrink: 0;
+}
+
+.dotActive {
+  background: var(--color-accent);
+  transform: scale(1.35);
+}
+
+/* ── Collapsed ───────────────────────────────────────────────────────────────── */
+.collapsed {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  overflow: hidden;
+  width: 100%;
+  animation: fadeIn 300ms ease;
+}
+
+.collapsedThumb {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.collapsedText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.collapsedSource {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+}
+
+.collapsedTitle {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dots {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Gallery (expanded) */
+.gallery {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 220ms ease;
+  padding-bottom: 18px;
+  box-sizing: border-box;
+}
+
+.dotsBottom {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.arrow {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 1.4rem;
+  line-height: 1;
+  width: 28px;
+  min-width: 28px;
+  height: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 150ms, color 150ms;
+  user-select: none;
+}
+
+.arrow:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.card {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  animation: slideIn 220ms ease;
+}
+
+.imageWrap {
+  flex: 0 0 40%;
+  overflow: hidden;
+  border-right: 1px solid var(--color-border);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.contentFull {
+  flex: 1 1 100%;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.source {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.time {
+  font-size: 0.62rem;
+  color: var(--color-text-secondary);
+}
+
+.title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.description {
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.dislikeBtn {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.62rem;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: background 150ms, color 150ms;
+}
+
+.dislikeBtn:hover {
+  background: color-mix(in srgb, var(--color-border) 60%, transparent);
+  color: var(--color-text-primary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}

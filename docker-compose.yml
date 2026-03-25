@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: homespace-backend
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3001:3001"
+    volumes:
+      - /volume1/docker/homespace/data:/app/data
+    networks:
+      - homespace
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: homespace-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - homespace
+
+networks:
+  homespace:
+    driver: bridge

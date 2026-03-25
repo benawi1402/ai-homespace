@@ -1,0 +1,117 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ── Active counter ─────────────────────────────────────────────────────────── */
+.counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 36px;
+}
+
+.count {
+  font-size: 2rem;
+  font-weight: 200;
+  line-height: 1;
+  color: var(--color-success);
+}
+
+.label {
+  font-size: 0.6rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Device list ─────────────────────────────────────────────────────────────── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+  max-height: 100%;
+  flex: 1;
+}
+
+.listExpanded {
+  border-left: 1px solid var(--color-border);
+  padding-left: 1rem;
+  animation: fadeSlide 280ms ease;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+/* ── Individual device row ───────────────────────────────────────────────────── */
+.device {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 150ms;
+  font-size: 0.76rem;
+  outline: none;
+}
+
+.device:hover {
+  background: var(--color-surface-hover);
+}
+
+.device:focus-visible {
+  outline: 1px solid var(--color-accent);
+}
+
+.device.unavailable {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.deviceIcon {
+  font-size: 0.85rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.deviceName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.device.on .deviceName {
+  color: var(--color-text-primary);
+}
+
+/* ── State indicator dot ─────────────────────────────────────────────────────── */
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--color-border);
+  transition: background 200ms, box-shadow 200ms;
+}
+
+.dotOn {
+  background: var(--color-success);
+  box-shadow: 0 0 5px var(--color-success);
+}
+
+/* ── Shared states ───────────────────────────────────────────────────────────── */
+.meta {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}

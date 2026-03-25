@@ -1,0 +1,313 @@
+/* ── Base ────────────────────────────────────────────────────────────────────── */
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.containerStretched {
+  align-items: stretch;
+  height: 100%;
+}
+
+/* ── Provider icons ──────────────────────────────────────────────────────────── */
+.providerIcon {
+  width: 22px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.providerIconLg {
+  width: 26px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* ── Collapsed: per-account block ───────────────────────────────────────────── */
+.collapsedAccount {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.collapsedSep {
+  border-left: 1px solid var(--color-border);
+  padding-left: 1rem;
+  margin-left: 0.25rem;
+}
+
+.collapsedStats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 1px;
+}
+
+.collapsedCount {
+  font-size: 1.8rem;
+  font-weight: 200;
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+.collapsedLabel {
+  font-size: 0.58rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.collapsedPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+  flex: 1;
+  border-left: 1px solid var(--color-border);
+  padding-left: 0.75rem;
+}
+
+/* ── Expanded: account columns ───────────────────────────────────────────────── */
+.accountCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.accountColSep {
+  border-left: 1px solid var(--color-border);
+  padding-left: 0.75rem;
+  margin-left: 0.75rem;
+}
+
+.accountHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  padding: 0 4px 5px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 4px;
+  animation: fadeSlide 280ms ease;
+}
+
+.accountName {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accountUnread {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+  border-radius: 10px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.accountMessages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ── Message rows ────────────────────────────────────────────────────────────── */
+.message {
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: background 150ms;
+}
+
+.message.clickable {
+  cursor: pointer;
+  outline: none;
+}
+
+.message.clickable:hover {
+  background: var(--color-surface-hover);
+}
+
+.message.clickable:focus-visible {
+  outline: 1px solid var(--color-accent);
+}
+
+.msgMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1px;
+}
+
+.from {
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.time {
+  font-size: 0.62rem;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.subject {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message.unread .subject {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.msgPreview {
+  font-size: 0.66rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+/* ── Body view left bar ──────────────────────────────────────────────────────── */
+.bodyAccountBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  padding-top: 2px;
+}
+
+/* ── Body view ───────────────────────────────────────────────────────────────── */
+.bodyView {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-left: 1px solid var(--color-border);
+  padding-left: 1rem;
+  animation: fadeSlide 220ms ease;
+}
+
+.bodyHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  margin-bottom: 8px;
+}
+
+.backButton {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 150ms, color 150ms;
+}
+
+.backButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.bodyMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+}
+
+.bodySubject {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bodyFrom {
+  font-size: 0.65rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bodyContent {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.bodyFrame {
+  flex: 1;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.bodyText {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  padding-right: 4px;
+  font-family: inherit;
+}
+
+.noBody {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────────── */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+/* ── Shared states ───────────────────────────────────────────────────────────── */
+.meta {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}

@@ -1,0 +1,24 @@
+# Credentials — never commit the real .env
+.env
+backend/.env
+
+# Build outputs
+dist/
+build/
+backend/dist/
+frontend/dist/
+
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Persistent runtime data
+data/
+
+# Temporary / editor files
+*.py
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
