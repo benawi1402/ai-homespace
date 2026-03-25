@@ -91,32 +91,33 @@ export default function NewsPanel() {
     else setCurrentIndex((i) => (i - 1 + visiblePosts.length) % visiblePosts.length);
   };
 
-  // ── Collapsed ──────────────────────────────────────────────────────────────
+  // ── Collapsed: 3 stacked articles ──────────────────────────────────────────
   if (!isFocused) {
+    const stackPosts = visiblePosts.slice(0, 3);
     return (
-      <div className={styles.collapsed}>
-        {current.imageUrl && (
-          <img
-            className={styles.collapsedThumb}
-            src={current.imageUrl}
-            alt=""
-            loading="lazy"
-          />
-        )}
-        <div className={styles.collapsedText}>
-          <div className={styles.collapsedSource}>{current.source}</div>
-          <div className={styles.collapsedTitle}>{current.title}</div>
-        </div>
-        <div className={styles.dots}>
-          {visiblePosts.slice(0, 8).map((_, i) => (
-            <span
-              key={i}
-              className={[styles.dot, i === safeIdx ? styles.dotActive : '']
-                .filter(Boolean)
-                .join(' ')}
-            />
-          ))}
-        </div>
+      <div className={styles.stackList}>
+        {stackPosts.map((post, i) => (
+          <div
+            key={post.id}
+            className={[styles.stackItem, i > 0 ? styles.stackSep : '']
+              .filter(Boolean)
+              .join(' ')}
+          >
+            {post.imageUrl && (
+              <img
+                className={styles.stackThumb}
+                src={post.imageUrl}
+                alt=""
+                loading="lazy"
+              />
+            )}
+            <div className={styles.stackText}>
+              <span className={styles.collapsedSource}>{post.source}</span>
+              <span className={styles.stackTitle}>{post.title}</span>
+              <span className={styles.stackTime}>{timeAgo(post.publishedAt)}</span>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }

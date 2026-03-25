@@ -25,52 +25,82 @@
   flex-shrink: 0;
 }
 
-/* ── Collapsed: per-account block ───────────────────────────────────────────── */
-.collapsedAccount {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.collapsedSep {
-  border-left: 1px solid var(--color-border);
-  padding-left: 1rem;
-  margin-left: 0.25rem;
-}
-
-.collapsedStats {
+/* ── Collapsed: account strip + message list ────────────────────────────────── */
+.collapsedWrap {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  flex-shrink: 0;
-  gap: 1px;
+  height: 100%;
+  width: 100%;
 }
 
-.collapsedCount {
-  font-size: 1.8rem;
+.accountStrip {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 6px;
+  gap: 0;
+}
+
+.acctChip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-right: 16px;
+}
+
+.acctChipSep {
+  padding-left: 16px;
+  border-left: 1px solid var(--color-border);
+}
+
+.acctUnread {
+  font-size: 1.6rem;
   font-weight: 200;
   line-height: 1;
   color: var(--color-accent);
 }
 
-.collapsedLabel {
-  font-size: 0.58rem;
-  color: var(--color-text-secondary);
+.acctLabel {
+  font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
 }
 
-.collapsedPreview {
+.msgList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.msgItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.msgItem:last-child {
+  border-bottom: none;
+}
+
+.msgIcon {
+  width: 18px;
+  height: auto;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.msgBody {
   display: flex;
   flex-direction: column;
   gap: 2px;
   overflow: hidden;
   flex: 1;
-  border-left: 1px solid var(--color-border);
-  padding-left: 0.75rem;
 }
 
 /* ── Expanded: account columns ───────────────────────────────────────────────── */
@@ -158,29 +188,30 @@
 }
 
 .from {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   color: var(--color-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 160px;
+  flex: 1;
 }
 
 .time {
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   color: var(--color-text-secondary);
   flex-shrink: 0;
 }
 
 .subject {
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   color: var(--color-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.message.unread .subject {
+.message.unread .subject,
+.msgItem.unread .subject {
   color: var(--color-text-primary);
   font-weight: 500;
 }

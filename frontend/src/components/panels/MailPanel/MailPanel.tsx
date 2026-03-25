@@ -116,34 +116,54 @@ export default function MailPanel() {
     );
   }
 
-  // ── Collapsed ────────────────────────────────────────────────────────────────
+  // ── Collapsed: account strip + message list ──────────────────────────────
   if (!isFocused) {
+    const sortedMessages = [...data.messages]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 8);
+
     return (
-      <div className={styles.container}>
-        {data.accounts.map((acct, i) => {
-          const msgs = byAccount.get(acct.name) ?? [];
-          const latest = msgs[msgs.length - 1];
-          return (
+      <div className={styles.collapsedWrap}>
+        {/* Account strip */}
+        <div className={styles.accountStrip}>
+          {data.accounts.map((acct, i) => (
             <div
               key={acct.name}
-              className={[styles.collapsedAccount, i > 0 ? styles.collapsedSep : '']
+              className={[styles.acctChip, i > 0 ? styles.acctChipSep : '']
                 .filter(Boolean)
                 .join(' ')}
             >
-              <div className={styles.collapsedStats}>
-                <ProviderIcon provider={acct.provider} className={styles.providerIcon} />
-                <span className={styles.collapsedCount}>{acct.unreadCount}</span>
-                <span className={styles.collapsedLabel}>unread</span>
-              </div>
-              {latest && (
-                <div className={styles.collapsedPreview}>
-                  <span className={styles.previewSubject}>{latest.subject}</span>
-                  <span className={styles.previewFrom}>{latest.from}</span>
-                </div>
-              )}
+              <ProviderIcon provider={acct.provider} className={styles.providerIcon} />
+              <span className={styles.acctUnread}>{acct.unreadCount}</span>
+              <span className={styles.acctLabel}>unread</span>
             </div>
-          );
-        })}
+          ))}
+        </div>
+        {/* Message list */}
+        <div className={styles.msgList}>
+          {sortedMessages.map((msg) => {
+            const acctInfo = data.accounts.find((a) => a.name === msg.account);
+            return (
+              <div
+                key={msg.id}
+                className={[styles.msgItem, !msg.read ? styles.unread : '']
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                {acctInfo && (
+                  <ProviderIcon provider={acctInfo.provider} className={styles.msgIcon} />
+                )}
+                <div className={styles.msgBody}>
+                  <div className={styles.msgMeta}>
+                    <span className={styles.from}>{msg.from}</span>
+                    <span className={styles.time}>{timeAgo(msg.date)}</span>
+                  </div>
+                  <span className={styles.subject}>{msg.subject}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
