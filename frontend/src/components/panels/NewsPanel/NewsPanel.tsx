@@ -91,12 +91,11 @@ export default function NewsPanel() {
     else setCurrentIndex((i) => (i - 1 + visiblePosts.length) % visiblePosts.length);
   };
 
-  // ── Collapsed: 3 stacked articles ──────────────────────────────────────────
+  // ── Collapsed: scrollable list of all posts ────────────────────────────────
   if (!isFocused) {
-    const stackPosts = visiblePosts.slice(0, 3);
     return (
       <div className={styles.stackList}>
-        {stackPosts.map((post, i) => (
+        {visiblePosts.map((post, i) => (
           <div
             key={post.id}
             className={[styles.stackItem, i > 0 ? styles.stackSep : '']

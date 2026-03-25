@@ -26,6 +26,8 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* ── Scrollbar styling (panels) ─────────────────────────────────────────────── */

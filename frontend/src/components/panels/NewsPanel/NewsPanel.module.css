@@ -250,13 +250,15 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .stackItem {
   display: flex;
   align-items: stretch;
-  flex: 1;
-  min-height: 0;
+  min-height: 80px;
+  flex-shrink: 0;
   overflow: hidden;
 }
 

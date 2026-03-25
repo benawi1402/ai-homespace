@@ -44,7 +44,7 @@ export default function PanelWrapper({
           .filter(Boolean)
           .join(' ')}
         style={{ flex: `${flexGrow} 1 0%` }}
-        onClick={onClick}
+        onClick={(e) => { e.stopPropagation(); onClick(); }}
         onKeyDown={handleKeyDown}
         role="button"
         tabIndex={0}

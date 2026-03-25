@@ -48,7 +48,7 @@ function Clock() {
 
 export default function Dashboard() {
   const { data: config, isLoading } = usePanelConfig();
-  const { focusedPanelId, toggleFocusedPanel } = useDashboardStore();
+  const { focusedPanelId, toggleFocusedPanel, setFocusedPanel } = useDashboardStore();
 
   if (isLoading) {
     return (
@@ -63,7 +63,7 @@ export default function Dashboard() {
     .sort((a, b) => a.order - b.order);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} onClick={() => setFocusedPanel(null)}>
       <Clock />
       <div className={styles.panels}>
         {panels.map((panel) => {
