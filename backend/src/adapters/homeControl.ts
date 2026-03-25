@@ -46,7 +46,17 @@ export async function fetchHomeControl(): Promise<HomeControlData> {
   const states = (await res.json()) as HassState[];
 
   const devices: HomeDevice[] = states
-    .filter((s) => DISPLAY_DOMAINS.has(s.entity_id.split('.')[0] ?? ''))
+    .filter((s) => {
+      if (!DISPLAY_DOMAINS.has(s.entity_id.split('.')[0] ?? '')) return false;
+      // Exclude Hue rooms / zones (group entities from the Hue integration)
+      if (s.attributes['is_hue_group'] === true) return false;
+      // Exclude generic HA light groups (their attributes contain an entity_id array of children)
+      if (Array.isArray(s.attributes['entity_id'])) return false;
+      // Exclude the Hue bridge itself
+      const name = String(s.attributes['friendly_name'] ?? s.entity_id).toLowerCase();
+      if (name.includes('bridge') || s.entity_id.toLowerCase().includes('bridge')) return false;
+      return true;
+    })
     .slice(0, 20)
     .map((s) => ({
       id: s.entity_id,
