@@ -28,7 +28,34 @@ export function useToggleDevice() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: toggleDevice,
-    onSuccess: () => {
+    // Optimistically flip the device state so the UI responds immediately
+    onMutate: async (entityId: string) => {
+      await queryClient.cancelQueries({ queryKey: ['homeControl'] });
+      const previous = queryClient.getQueryData<HomeControlData>(['homeControl']);
+      queryClient.setQueryData<HomeControlData>(['homeControl'], (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          devices: old.devices.map((d) => {
+            if (d.id !== entityId) return d;
+            const isOn = d.state === 'on' || d.state === 'open';
+            const nextState = isOn
+              ? d.type === 'cover' ? 'closed' : 'off'
+              : d.type === 'cover' ? 'open' : 'on';
+            return { ...d, state: nextState };
+          }),
+        };
+      });
+      return { previous };
+    },
+    // Roll back on error
+    onError: (_err, _entityId, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(['homeControl'], context.previous);
+      }
+    },
+    // Refetch to confirm real HA state after mutation settles
+    onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: ['homeControl'] });
     },
   });

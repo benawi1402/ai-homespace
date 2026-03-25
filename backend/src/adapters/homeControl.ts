@@ -55,7 +55,8 @@ export async function fetchHomeControl(): Promise<HomeControlData> {
       state: s.state,
       available: s.state !== 'unavailable',
       attributes: s.attributes,
-    }));
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id));
 
   const data: HomeControlData = { devices, updatedAt: new Date().toISOString() };
   cache.set(CACHE_KEY, data, config.hass.cacheTtl);
@@ -65,8 +66,8 @@ export async function fetchHomeControl(): Promise<HomeControlData> {
 export async function toggleDevice(entityId: string): Promise<void> {
   if (!config.hass.url || !config.hass.token) return;
 
-  const domain = entityId.split('.')[0] ?? 'homeassistant';
-  await fetch(`${config.hass.url}/api/services/${domain}/toggle`, {
+  // Use homeassistant.toggle — works universally across all domains
+  await fetch(`${config.hass.url}/api/services/homeassistant/toggle`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${config.hass.token}`,
