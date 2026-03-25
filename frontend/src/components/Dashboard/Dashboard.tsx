@@ -1,6 +1,7 @@
 import { useEffect, useState, type FC } from 'react';
 import { usePanelConfig } from '../../hooks/usePanelConfig';
 import { useDashboardStore } from '../../store/dashboardStore';
+import { useTheme, THEME_META, THEMES } from '../../hooks/useTheme';
 import PanelWrapper from '../PanelWrapper/PanelWrapper';
 import WeatherPanel from '../panels/WeatherPanel/WeatherPanel';
 import MailPanel from '../panels/MailPanel/MailPanel';
@@ -23,6 +24,9 @@ const PANEL_COMPONENTS: Record<PanelConfig['type'], FC> = {
 
 function Clock() {
   const [now, setNow] = useState(new Date());
+  const { theme, cycleTheme } = useTheme();
+  const nextTheme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
@@ -42,6 +46,14 @@ function Clock() {
           year: 'numeric',
         })}
       </span>
+      <button
+        className={styles.themeBtn}
+        onClick={(e) => { e.stopPropagation(); cycleTheme(); }}
+        aria-label={`Switch to ${THEME_META[nextTheme].label} theme`}
+        title={`Switch to ${THEME_META[nextTheme].label} theme`}
+      >
+        {THEME_META[theme].icon}
+      </button>
       <button
         className={styles.reloadBtn}
         onClick={() => window.location.reload()}
