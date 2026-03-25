@@ -24,20 +24,20 @@ const PANEL_COMPONENTS: Record<PanelConfig['type'], FC> = {
 
 function ThemeIcon({ theme }: { theme: Theme }) {
   if (theme === 'space') return (
-    <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <circle cx="8" cy="8" r="3.5" />
-      <ellipse cx="8" cy="8" rx="7" ry="2.3" fill="none" stroke="currentColor" strokeWidth="1.3" transform="rotate(-25 8 8)" />
+    <svg width="1em" height="1em" viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="8" r="3.5" fill="#c8a96e" />
+      <ellipse cx="8" cy="8" rx="7" ry="2.3" fill="none" stroke="#e0c97a" strokeWidth="1.3" transform="rotate(-25 8 8)" />
     </svg>
   );
   if (theme === 'dark') return (
-    <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M13 9.5A5.5 5.5 0 1 1 6.5 3a4 4 0 1 0 6.5 6.5z" />
+    <svg width="1em" height="1em" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M13 9.5A5.5 5.5 0 1 1 6.5 3a4 4 0 1 0 6.5 6.5z" fill="#f5e06a" />
     </svg>
   );
   return (
     <svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="8" cy="8" r="3" fill="currentColor" />
-      <g stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+      <circle cx="8" cy="8" r="3" fill="#f9c120" />
+      <g stroke="#f9c120" strokeWidth="1.4" strokeLinecap="round">
         <line x1="8" y1="1" x2="8" y2="3.5" />
         <line x1="8" y1="12.5" x2="8" y2="15" />
         <line x1="1" y1="8" x2="3.5" y2="8" />
