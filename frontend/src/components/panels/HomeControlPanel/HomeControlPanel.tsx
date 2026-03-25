@@ -12,12 +12,46 @@ const DEVICE_ICONS: Record<HomeDevice['type'], string> = {
   unknown: '⚙️',
 };
 
-interface DeviceRowProps {
+interface DeviceTileProps {
   device: HomeDevice;
   onToggle: (id: string) => void;
 }
 
-function DeviceRow({ device, onToggle }: DeviceRowProps) {
+function DeviceTile({ device, onToggle }: DeviceTileProps) {
+  const isOn = device.state === 'on' || device.state === 'open';
+
+  return (
+    <div
+      className={[
+        styles.tile,
+        isOn ? styles.tileOn : '',
+        !device.available ? styles.unavailable : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (device.available) onToggle(device.id);
+      }}
+      onKeyDown={(e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && device.available) {
+          e.stopPropagation();
+          onToggle(device.id);
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`${device.name}: ${device.state}`}
+      aria-pressed={isOn}
+    >
+      <span className={styles.tileIcon}>{DEVICE_ICONS[device.type]}</span>
+      <span className={styles.tileName}>{device.name}</span>
+      <span className={[styles.dot, isOn ? styles.dotOn : ''].filter(Boolean).join(' ')} />
+    </div>
+  );
+}
+
+function DeviceRow({ device, onToggle }: DeviceTileProps) {
   const isOn = device.state === 'on' || device.state === 'open';
 
   return (
@@ -63,7 +97,21 @@ export default function HomeControlPanel() {
     (d) => d.state === 'on' || d.state === 'open',
   ).length;
 
-  const visibleDevices = isFocused ? data.devices : data.devices.slice(0, 4);
+  if (!isFocused) {
+    return (
+      <div className={styles.collapsedContainer}>
+        <div className={styles.counter}>
+          <span className={styles.count}>{activeCount}</span>
+          <span className={styles.label}>active</span>
+        </div>
+        <div className={styles.tileGrid}>
+          {data.devices.slice(0, 8).map((device) => (
+            <DeviceTile key={device.id} device={device} onToggle={toggle} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -73,9 +121,9 @@ export default function HomeControlPanel() {
         <span className={styles.label}>active</span>
       </div>
 
-      {/* Device list */}
-      <div className={[styles.list, isFocused ? styles.listExpanded : ''].filter(Boolean).join(' ')}>
-        {visibleDevices.map((device) => (
+      {/* Device list — full list in expanded view */}
+      <div className={[styles.list, styles.listExpanded].join(' ')}>
+        {data.devices.map((device) => (
           <DeviceRow key={device.id} device={device} onToggle={toggle} />
         ))}
       </div>
