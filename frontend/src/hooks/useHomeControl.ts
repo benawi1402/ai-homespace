@@ -54,9 +54,13 @@ export function useToggleDevice() {
         queryClient.setQueryData(['homeControl'], context.previous);
       }
     },
-    // Refetch to confirm real HA state after mutation settles
+    // Delay the confirmatory refetch: HA processes the toggle asynchronously
+    // (~500-800ms). Refetching immediately returns the old state and clobbers
+    // the correct optimistic update. 1.5s gives HA time to settle.
     onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey: ['homeControl'] });
+      setTimeout(() => {
+        void queryClient.invalidateQueries({ queryKey: ['homeControl'] });
+      }, 1500);
     },
   });
 }
