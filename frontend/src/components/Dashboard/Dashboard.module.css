@@ -5,7 +5,7 @@
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  background: var(--color-bg);
+  background: transparent;
   overflow: hidden;
   padding: var(--corner-safe-y) var(--corner-safe-x);
 }
