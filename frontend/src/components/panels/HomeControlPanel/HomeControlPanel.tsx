@@ -88,11 +88,11 @@ function BrightnessSlider({ devices, onSet }: { devices: HomeDevice[]; onSet: (v
     : 50;
 
   const [value, setValue] = useState(avgBrightness);
-  const [dragging, setDragging] = useState(false);
+  const [locked, setLocked] = useState(false);
 
   useEffect(() => {
-    if (!dragging) setValue(avgBrightness);
-  }, [avgBrightness, dragging]);
+    if (!locked) setValue(avgBrightness);
+  }, [avgBrightness, locked]);
 
   const disabled = onLights.length === 0;
 
@@ -110,8 +110,15 @@ function BrightnessSlider({ devices, onSet }: { devices: HomeDevice[]; onSet: (v
         disabled={disabled}
         className={styles.brightnessSlider}
         style={{ '--slider-pct': `${value}%` } as React.CSSProperties}
-        onChange={(e) => { setDragging(true); setValue(Number(e.target.value)); }}
-        onPointerUp={(e) => { setDragging(false); onSet(Number((e.target as HTMLInputElement).value)); }}
+        onChange={(e) => { setLocked(true); setValue(Number(e.target.value)); }}
+        onPointerUp={(e) => {
+          const v = Number((e.target as HTMLInputElement).value);
+          setValue(v);
+          onSet(v);
+          // Keep the lock for 10s — longer than the refetch delay — so the
+          // slider never snaps back while lamps are catching up.
+          setTimeout(() => setLocked(false), 10_000);
+        }}
         aria-label="Brightness"
       />
       <span className={styles.brightnessValue}>{disabled ? '—' : `${value}%`}</span>

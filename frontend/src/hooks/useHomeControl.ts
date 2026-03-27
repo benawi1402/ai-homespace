@@ -78,10 +78,41 @@ export function useSetBrightness() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: setBrightnessLevel,
+    // Optimistically write the new brightness into the cache so the slider
+    // never jumps back while waiting for HA to catch up.
+    onMutate: async (brightness: number) => {
+      await queryClient.cancelQueries({ queryKey: ['homeControl'] });
+      const previous = queryClient.getQueryData<HomeControlData>(['homeControl']);
+      queryClient.setQueryData<HomeControlData>(['homeControl'], (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          devices: old.devices.map((d) => {
+            if (d.type !== 'light' || d.state !== 'on' || !d.available) return d;
+            return {
+              ...d,
+              attributes: {
+                ...d.attributes,
+                // HA stores brightness as 0-255; convert from percentage
+                brightness: Math.round((brightness / 100) * 255),
+              },
+            };
+          }),
+        };
+      });
+      return { previous };
+    },
+    onError: (_err, _brightness, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(['homeControl'], context.previous);
+      }
+    },
+    // Give lamps more time to report their new state before refetching.
+    // Zigbee/Z-Wave lamps can take 3-6s to update in HA.
     onSettled: () => {
       setTimeout(() => {
         void queryClient.invalidateQueries({ queryKey: ['homeControl'] });
-      }, 1500);
+      }, 8000);
     },
   });
 }
