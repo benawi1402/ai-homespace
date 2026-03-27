@@ -1,6 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { HomeControlData } from '../types';
 
+async function setBrightnessLevel(brightness: number): Promise<void> {
+  const res = await fetch('/api/home/brightness', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ brightness }),
+  });
+  if (!res.ok && res.status !== 204) throw new Error(`Set brightness failed: ${res.status}`);
+}
+
 async function fetchDevices(): Promise<HomeControlData> {
   const res = await fetch('/api/home/devices');
   if (!res.ok) throw new Error(`Home control fetch failed: ${res.status}`);
@@ -57,6 +66,18 @@ export function useToggleDevice() {
     // Delay the confirmatory refetch: HA processes the toggle asynchronously
     // (~500-800ms). Refetching immediately returns the old state and clobbers
     // the correct optimistic update. 1.5s gives HA time to settle.
+    onSettled: () => {
+      setTimeout(() => {
+        void queryClient.invalidateQueries({ queryKey: ['homeControl'] });
+      }, 1500);
+    },
+  });
+}
+
+export function useSetBrightness() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: setBrightnessLevel,
     onSettled: () => {
       setTimeout(() => {
         void queryClient.invalidateQueries({ queryKey: ['homeControl'] });

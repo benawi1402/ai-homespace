@@ -1,4 +1,5 @@
-import { useHomeControl, useToggleDevice } from '../../../hooks/useHomeControl';
+import { useEffect, useState } from 'react';
+import { useHomeControl, useToggleDevice, useSetBrightness } from '../../../hooks/useHomeControl';
 import { usePanelContext } from '../../PanelWrapper/PanelWrapper';
 import type { HomeDevice } from '../../../types';
 import styles from './HomeControlPanel.module.css';
@@ -54,6 +55,68 @@ function DeviceIcon({ type }: { type: HomeDevice['type'] }) {
       </svg>
     );
   }
+}
+
+function BrightnessIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" aria-hidden="true">
+      <circle cx="8" cy="8" r="3" />
+      <line x1="8" y1="1" x2="8" y2="3.5" />
+      <line x1="8" y1="12.5" x2="8" y2="15" />
+      <line x1="1" y1="8" x2="3.5" y2="8" />
+      <line x1="12.5" y1="8" x2="15" y2="8" />
+      <line x1="3.1" y1="3.1" x2="4.9" y2="4.9" />
+      <line x1="11.1" y1="11.1" x2="12.9" y2="12.9" />
+      <line x1="12.9" y1="3.1" x2="11.1" y2="4.9" />
+      <line x1="4.9" y1="11.1" x2="3.1" y2="12.9" />
+    </svg>
+  );
+}
+
+function BrightnessSlider({ devices, onSet }: { devices: HomeDevice[]; onSet: (v: number) => void }) {
+  const onLights = devices.filter((d) => d.type === 'light' && d.state === 'on' && d.available);
+
+  const avgBrightness = onLights.length > 0
+    ? Math.round(
+        onLights.reduce((sum, d) => {
+          const b = typeof d.attributes['brightness'] === 'number'
+            ? (d.attributes['brightness'] as number)
+            : 255;
+          return sum + (b / 255) * 100;
+        }, 0) / onLights.length,
+      )
+    : 50;
+
+  const [value, setValue] = useState(avgBrightness);
+  const [dragging, setDragging] = useState(false);
+
+  useEffect(() => {
+    if (!dragging) setValue(avgBrightness);
+  }, [avgBrightness, dragging]);
+
+  const disabled = onLights.length === 0;
+
+  return (
+    <div
+      className={[styles.brightnessRow, disabled ? styles.brightnessDisabled : ''].filter(Boolean).join(' ')}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <BrightnessIcon />
+      <input
+        type="range"
+        min={1}
+        max={100}
+        value={value}
+        disabled={disabled}
+        className={styles.brightnessSlider}
+        style={{ '--slider-pct': `${value}%` } as React.CSSProperties}
+        onChange={(e) => { setDragging(true); setValue(Number(e.target.value)); }}
+        onPointerUp={(e) => { setDragging(false); onSet(Number((e.target as HTMLInputElement).value)); }}
+        aria-label="Brightness"
+      />
+      <span className={styles.brightnessValue}>{disabled ? '—' : `${value}%`}</span>
+    </div>
+  );
 }
 
 interface DeviceTileProps {
@@ -132,6 +195,7 @@ function DeviceRow({ device, onToggle }: DeviceTileProps) {
 export default function HomeControlPanel() {
   const { data, error, isLoading } = useHomeControl();
   const { mutate: toggle } = useToggleDevice();
+  const { mutate: setBrightness } = useSetBrightness();
   const { isFocused } = usePanelContext();
 
   if (isLoading) return <span className={styles.meta}>Loading…</span>;
@@ -144,33 +208,40 @@ export default function HomeControlPanel() {
   if (!isFocused) {
     return (
       <div className={styles.collapsedContainer}>
-        <div className={styles.counter}>
-          <span className={styles.count}>{activeCount}</span>
-          <span className={styles.label}>active</span>
+        <div className={styles.collapsedTop}>
+          <div className={styles.counter}>
+            <span className={styles.count}>{activeCount}</span>
+            <span className={styles.label}>active</span>
+          </div>
+          <div className={styles.tileGrid}>
+            {data.devices.slice(0, 8).map((device) => (
+              <DeviceTile key={device.id} device={device} onToggle={toggle} />
+            ))}
+          </div>
         </div>
-        <div className={styles.tileGrid}>
-          {data.devices.slice(0, 8).map((device) => (
-            <DeviceTile key={device.id} device={device} onToggle={toggle} />
-          ))}
-        </div>
+        <BrightnessSlider devices={data.devices} onSet={setBrightness} />
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      {/* Active count — always visible */}
-      <div className={styles.counter}>
-        <span className={styles.count}>{activeCount}</span>
-        <span className={styles.label}>active</span>
+      <div className={styles.containerTop}>
+        {/* Active count */}
+        <div className={styles.counter}>
+          <span className={styles.count}>{activeCount}</span>
+          <span className={styles.label}>active</span>
+        </div>
+
+        {/* Device list */}
+        <div className={[styles.list, styles.listExpanded].join(' ')}>
+          {data.devices.map((device) => (
+            <DeviceRow key={device.id} device={device} onToggle={toggle} />
+          ))}
+        </div>
       </div>
 
-      {/* Device list — full list in expanded view */}
-      <div className={[styles.list, styles.listExpanded].join(' ')}>
-        {data.devices.map((device) => (
-          <DeviceRow key={device.id} device={device} onToggle={toggle} />
-        ))}
-      </div>
+      <BrightnessSlider devices={data.devices} onSet={setBrightness} />
     </div>
   );
 }

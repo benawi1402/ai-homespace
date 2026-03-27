@@ -1,19 +1,37 @@
 .container {
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-/* Collapsed: counter + tile grid side by side */
+.containerTop {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Collapsed: column — tiles on top, slider on bottom */
 .collapsedContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.collapsedTop {
   display: flex;
   align-items: center;
   gap: 1rem;
-  width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -205,6 +223,62 @@
 .dotOn {
   background: var(--color-success);
   box-shadow: 0 0 5px var(--color-success);
+}
+
+/* ── Brightness slider ──────────────────────────────────────────────────────── */
+.brightnessRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  padding: 2px 0;
+}
+
+.brightnessDisabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.brightnessSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) 0%,
+    var(--color-accent) var(--slider-pct, 50%),
+    var(--color-border) var(--slider-pct, 50%),
+    var(--color-border) 100%
+  );
+  outline: none;
+  cursor: pointer;
+  border: none;
+}
+
+.brightnessSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  cursor: pointer;
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.brightnessSlider:disabled::-webkit-slider-thumb {
+  background: var(--color-border);
+}
+
+.brightnessValue {
+  font-size: 0.65rem;
+  color: var(--color-text-secondary);
+  min-width: 28px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Shared states ───────────────────────────────────────────────────────────── */

@@ -89,6 +89,38 @@ export async function toggleDevice(entityId: string): Promise<void> {
   cache.invalidate(CACHE_KEY);
 }
 
+/**
+ * Set brightness (1–100%) on all lights that are currently ON.
+ * Lights that are OFF are intentionally skipped.
+ */
+export async function setBrightness(brightnessPercent: number): Promise<void> {
+  if (!config.hass.url || !config.hass.token) return;
+
+  const data = await fetchHomeControl();
+  const onLights = data.devices.filter(
+    (d) => d.type === 'light' && d.state === 'on' && d.available,
+  );
+
+  if (onLights.length === 0) return;
+
+  const pct = Math.max(1, Math.min(100, Math.round(brightnessPercent)));
+
+  await Promise.all(
+    onLights.map((light) =>
+      fetch(`${config.hass.url}/api/services/light/turn_on`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${config.hass.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ entity_id: light.id, brightness_pct: pct }),
+      }),
+    ),
+  );
+
+  cache.invalidate(CACHE_KEY);
+}
+
 function mockHomeControlData(): HomeControlData {
   return {
     devices: [
