@@ -152,19 +152,29 @@ Repeat the block with `MAIL2_` prefix for a second account. Both are optional.
 
 The calendar panel uses a **Google service account** so no browser OAuth flow is needed — it works headlessly on a kiosk.
 
-**One-time setup (≈5 minutes):**
+**One-time setup (≈10 minutes):**
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/) and create a new project (or use an existing one).
-2. Enable the **Google Calendar API** (APIs & Services → Enable APIs → search "Calendar").
-3. Create a **Service Account** (APIs & Services → Credentials → Create Credentials → Service Account). Download the JSON key file.
-4. In **Google Calendar**, open the settings for each calendar you want to display → "Share with specific people" → add the service account's email address (ends in `@...iam.gserviceaccount.com`) with "See all event details" permission.
-5. Copy the JSON key file to your server (e.g. `/volume1/docker/homespace/data/google-credentials.json`).
-6. Set in your `.env`:
+2. Enable the **Google Calendar API**: left sidebar → **APIs & Services** → **Library** → search "Google Calendar API" → click it → **Enable**.
+3. Create a Service Account: **APIs & Services** → **Credentials** → **Create Credentials** → **Service account**.
+   - Enter any name (e.g. `homespace`) → **Create and Continue** → skip the optional role/user steps → **Done**.
+4. Download the JSON key:
+   - Back on the **Credentials** page, click the service account email you just created.
+   - Go to the **Keys** tab → **Add Key** → **Create new key** → select **JSON** → **Create**.
+   - A `.json` file is downloaded automatically — this is the credentials file.
+5. In **Google Calendar** (calendar.google.com), share your calendar with the service account:
+   - Open calendar settings (gear ⚙ → **Settings**) → select the calendar on the left.
+   - Scroll to **Share with specific people** → **Add people** → paste the service account email (it looks like `homespace@your-project-id.iam.gserviceaccount.com`).
+   - Set permission to **"See all event details"** → **Send**.
+6. Copy the downloaded JSON file to your server (e.g. `/volume1/docker/homespace/data/google-credentials.json`).
+7. Set in your `.env`:
    ```
    GCAL_CREDENTIALS_FILE=/app/data/google-credentials.json
    GCAL_CALENDAR_IDS=primary,your.other.calendar@gmail.com
    ```
-7. Make sure the credentials file is accessible inside the container. With the default compose setup, the `/volume1/docker/homespace/data` volume is already mounted at `/app/data`, so placing the file there is all you need.
+   > **Note:** `primary` refers to the main calendar of the account that *shared* their calendar with the service account. For personal Google accounts, use the calendar's actual ID (visible in the calendar's settings page under "Integrate calendar").
+
+8. Make sure the credentials file is accessible inside the container. With the default compose setup, the `/volume1/docker/homespace/data` volume is already mounted at `/app/data`, so placing the file there is all you need.
 
 The panel is hidden automatically when `GCAL_CREDENTIALS_FILE` is not set.
 
