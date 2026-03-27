@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useHomeControl, useToggleDevice, useSetBrightness } from '../../../hooks/useHomeControl';
 import { usePanelContext } from '../../PanelWrapper/PanelWrapper';
 import type { HomeDevice } from '../../../types';
@@ -57,18 +57,31 @@ function DeviceIcon({ type }: { type: HomeDevice['type'] }) {
   }
 }
 
-function BrightnessIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" aria-hidden="true">
-      <circle cx="8" cy="8" r="3" />
-      <line x1="8" y1="1" x2="8" y2="3.5" />
-      <line x1="8" y1="12.5" x2="8" y2="15" />
-      <line x1="1" y1="8" x2="3.5" y2="8" />
-      <line x1="12.5" y1="8" x2="15" y2="8" />
-      <line x1="3.1" y1="3.1" x2="4.9" y2="4.9" />
-      <line x1="11.1" y1="11.1" x2="12.9" y2="12.9" />
-      <line x1="12.9" y1="3.1" x2="11.1" y2="4.9" />
-      <line x1="4.9" y1="11.1" x2="3.1" y2="12.9" />
+function BrightnessIcon({ size }: { size: 'low' | 'high' }) {
+  // Dim sun for low brightness, full sun for high
+  return size === 'high' ? (
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" aria-hidden="true">
+      <circle cx="8" cy="8" r="3.2" />
+      <line x1="8" y1="1" x2="8" y2="3.2" />
+      <line x1="8" y1="12.8" x2="8" y2="15" />
+      <line x1="1" y1="8" x2="3.2" y2="8" />
+      <line x1="12.8" y1="8" x2="15" y2="8" />
+      <line x1="3.1" y1="3.1" x2="4.7" y2="4.7" />
+      <line x1="11.3" y1="11.3" x2="12.9" y2="12.9" />
+      <line x1="12.9" y1="3.1" x2="11.3" y2="4.7" />
+      <line x1="4.7" y1="11.3" x2="3.1" y2="12.9" />
+    </svg>
+  ) : (
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" aria-hidden="true">
+      <circle cx="8" cy="8" r="2.2" />
+      <line x1="8" y1="2" x2="8" y2="3.5" />
+      <line x1="8" y1="12.5" x2="8" y2="14" />
+      <line x1="2" y1="8" x2="3.5" y2="8" />
+      <line x1="12.5" y1="8" x2="14" y2="8" />
+      <line x1="3.6" y1="3.6" x2="4.7" y2="4.7" />
+      <line x1="11.3" y1="11.3" x2="12.4" y2="12.4" />
+      <line x1="12.4" y1="3.6" x2="11.3" y2="4.7" />
+      <line x1="4.7" y1="11.3" x2="3.6" y2="12.4" />
     </svg>
   );
 }
@@ -89,6 +102,7 @@ function BrightnessSlider({ devices, onSet }: { devices: HomeDevice[]; onSet: (v
 
   const [value, setValue] = useState(avgBrightness);
   const [locked, setLocked] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!locked) setValue(avgBrightness);
@@ -96,32 +110,77 @@ function BrightnessSlider({ devices, onSet }: { devices: HomeDevice[]; onSet: (v
 
   const disabled = onLights.length === 0;
 
+  function pctFromPointer(e: React.PointerEvent): number {
+    const rect = trackRef.current!.getBoundingClientRect();
+    const raw = (e.clientX - rect.left) / rect.width;
+    return Math.round(Math.max(1, Math.min(100, raw * 100)));
+  }
+
+  function handlePointerDown(e: React.PointerEvent) {
+    if (disabled) return;
+    e.stopPropagation();
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    setLocked(true);
+    setValue(pctFromPointer(e));
+  }
+
+  function handlePointerMove(e: React.PointerEvent) {
+    if (!e.buttons || disabled) return;
+    e.stopPropagation();
+    setValue(pctFromPointer(e));
+  }
+
+  function handlePointerUp(e: React.PointerEvent) {
+    if (disabled) return;
+    e.stopPropagation();
+    const v = pctFromPointer(e);
+    setValue(v);
+    onSet(v);
+    setTimeout(() => setLocked(false), 10_000);
+  }
+
   return (
     <div
       className={[styles.brightnessRow, disabled ? styles.brightnessDisabled : ''].filter(Boolean).join(' ')}
       onClick={(e) => e.stopPropagation()}
     >
-      <BrightnessIcon />
-      <input
-        type="range"
-        min={1}
-        max={100}
-        value={value}
-        disabled={disabled}
-        className={styles.brightnessSlider}
-        style={{ '--slider-pct': `${value}%` } as React.CSSProperties}
-        onChange={(e) => { setLocked(true); setValue(Number(e.target.value)); }}
-        onPointerUp={(e) => {
-          const v = Number((e.target as HTMLInputElement).value);
+      <span className={styles.brightnessIconWrap}>
+        <BrightnessIcon size={disabled ? 'low' : value >= 50 ? 'high' : 'low'} />
+      </span>
+      <div
+        ref={trackRef}
+        className={styles.brightnessTrack}
+        role="slider"
+        aria-label="Brightness"
+        aria-valuemin={1}
+        aria-valuemax={100}
+        aria-valuenow={value}
+        aria-disabled={disabled}
+        tabIndex={disabled ? -1 : 0}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onKeyDown={(e) => {
+          if (disabled) return;
+          e.stopPropagation();
+          let v = value;
+          if (e.key === 'ArrowRight' || e.key === 'ArrowUp') v = Math.min(100, value + 5);
+          else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') v = Math.max(1, value - 5);
+          else return;
           setValue(v);
+          setLocked(true);
           onSet(v);
-          // Keep the lock for 10s — longer than the refetch delay — so the
-          // slider never snaps back while lamps are catching up.
           setTimeout(() => setLocked(false), 10_000);
         }}
-        aria-label="Brightness"
-      />
-      <span className={styles.brightnessValue}>{disabled ? '—' : `${value}%`}</span>
+      >
+        <div
+          className={styles.brightnessTrackFill}
+          style={{ width: `${value}%` }}
+        />
+        <span className={styles.brightnessLabel}>
+          {disabled ? '—' : `${value}%`}
+        </span>
+      </div>
     </div>
   );
 }

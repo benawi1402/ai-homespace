@@ -225,14 +225,23 @@
   box-shadow: 0 0 5px var(--color-success);
 }
 
-/* ── Brightness slider ──────────────────────────────────────────────────────── */
+/* ── Brightness slider (Android pill style) ──────────────────────────────── */
 .brightnessRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
   color: var(--color-text-secondary);
   padding: 2px 0;
+  touch-action: none;   /* prevent scroll hijacking on touch */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.brightnessIconWrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .brightnessDisabled {
@@ -240,45 +249,47 @@
   pointer-events: none;
 }
 
-.brightnessSlider {
-  -webkit-appearance: none;
-  appearance: none;
+/* Outer track — acts as the hit target */
+.brightnessTrack {
+  position: relative;
   flex: 1;
-  height: 4px;
-  border-radius: 2px;
-  background: linear-gradient(
-    to right,
-    var(--color-accent) 0%,
-    var(--color-accent) var(--slider-pct, 50%),
-    var(--color-border) var(--slider-pct, 50%),
-    var(--color-border) 100%
-  );
-  outline: none;
-  cursor: pointer;
-  border: none;
-}
-
-.brightnessSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  cursor: pointer;
-  border: 2px solid var(--color-bg);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-}
-
-.brightnessSlider:disabled::-webkit-slider-thumb {
+  height: 28px;
+  border-radius: 14px;
   background: var(--color-border);
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  touch-action: none;
 }
 
-.brightnessValue {
-  font-size: 0.65rem;
-  color: var(--color-text-secondary);
-  min-width: 28px;
-  text-align: right;
+.brightnessTrack:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+/* Filled (lit) portion */
+.brightnessTrackFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-accent) 80%, white 20%);
+  transition: width 80ms ease;
+  pointer-events: none;
+}
+
+/* Percentage label centered on the track */
+.brightnessLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  mix-blend-mode: difference;   /* stays readable on both filled and empty parts */
+  pointer-events: none;
+  letter-spacing: 0.02em;
 }
 
 /* ── Shared states ───────────────────────────────────────────────────────────── */
