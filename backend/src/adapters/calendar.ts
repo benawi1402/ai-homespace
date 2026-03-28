@@ -85,7 +85,7 @@ export async function fetchCalendar(): Promise<CalendarData> {
 
   const now = new Date();
   const timeMin = now.toISOString();
-  const timeMax = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  const timeMax = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString();
 
   const allEvents: CalendarEvent[] = [];
 
@@ -98,7 +98,7 @@ export async function fetchCalendar(): Promise<CalendarData> {
       url.searchParams.set('timeMax', timeMax);
       url.searchParams.set('singleEvents', 'true');
       url.searchParams.set('orderBy', 'startTime');
-      url.searchParams.set('maxResults', '50');
+      url.searchParams.set('maxResults', '250');
 
       const res = await fetch(url.toString(), {
         headers: { Authorization: `Bearer ${token}` },
@@ -188,6 +188,36 @@ function mockCalendarData(): CalendarData {
         calendarId: 'primary',
         calendarName: 'Personal',
         color: '#4cdb80',
+      },
+      {
+        id: '5',
+        title: 'Quarterly planning',
+        start: at(14, 13, 0),
+        end: at(14, 15, 0),
+        allDay: false,
+        calendarId: 'work',
+        calendarName: 'Work',
+        color: '#4a9eff',
+      },
+      {
+        id: '6',
+        title: 'Holiday',
+        start: dateOnly(45),
+        end: dateOnly(46),
+        allDay: true,
+        calendarId: 'primary',
+        calendarName: 'Personal',
+        color: '#f0aa40',
+      },
+      {
+        id: '7',
+        title: 'Conference',
+        start: at(75, 9, 0),
+        end: at(75, 17, 0),
+        allDay: false,
+        calendarId: 'work',
+        calendarName: 'Work',
+        color: '#4a9eff',
       },
     ],
     updatedAt: new Date().toISOString(),

@@ -81,7 +81,7 @@ export default function CalendarPanel() {
     );
   }
 
-  // ── Expanded view: events grouped by day (7 days) ───────────────────────────
+  // ── Expanded view: events grouped by day (90 days / ~3 months) ──────────────
   const grouped = new Map<string, CalendarEvent[]>();
   for (const event of data.events) {
     const d = eventDateStr(event);
