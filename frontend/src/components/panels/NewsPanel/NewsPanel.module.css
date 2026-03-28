@@ -243,6 +243,32 @@
   flex: 1;
 }
 
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.readMoreBtn {
+  background: var(--color-accent);
+  border: none;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 150ms;
+  flex-shrink: 0;
+}
+
+.readMoreBtn:hover {
+  opacity: 0.85;
+}
+
 .dislikeBtn {
   background: none;
   border: 1px solid var(--color-border);
@@ -251,8 +277,6 @@
   padding: 3px 8px;
   border-radius: 3px;
   cursor: pointer;
-  align-self: flex-start;
-  margin-top: auto;
   flex-shrink: 0;
   white-space: nowrap;
   transition: background 150ms, color 150ms;
@@ -261,6 +285,79 @@
 .dislikeBtn:hover {
   background: color-mix(in srgb, var(--color-border) 60%, transparent);
   color: var(--color-text-primary);
+}
+
+/* ── Article overlay ─────────────────────────────────────────────────────────── */
+.overlayBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 150ms ease;
+}
+
+.overlayWindow {
+  width: 92%;
+  height: 92%;
+  background: var(--color-surface);
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 12px 60px rgba(0, 0, 0, 0.7);
+}
+
+.overlayHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  min-height: 36px;
+}
+
+.overlayUrl {
+  font-size: 0.62rem;
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  flex: 1;
+  text-decoration: none;
+}
+
+.overlayUrl:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.overlayClose {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 150ms, color 150ms;
+}
+
+.overlayClose:hover {
+  background: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.overlayFrame {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #fff;
 }
 
 /* Animations */
@@ -302,6 +399,13 @@
   object-fit: cover;
   border-right: 1px solid var(--color-border);
   display: block;
+}
+
+.stackMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .stackText {

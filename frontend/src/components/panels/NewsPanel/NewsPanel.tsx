@@ -1,10 +1,47 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useNews, dislikePost } from '../../../hooks/useNews';
 import { usePanelContext } from '../../PanelWrapper/PanelWrapper';
 import type { NewsPost } from '../../../types';
 import styles from './NewsPanel.module.css';
 
 const AUTO_ADVANCE_MS = 12_000;
+
+function ArticleOverlay({ url, onClose }: { url: string; onClose: () => void }) {
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  return createPortal(
+    <div className={styles.overlayBackdrop} onClick={onClose}>
+      <div className={styles.overlayWindow} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.overlayHeader}>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.overlayUrl}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {url}
+          </a>
+          <button className={styles.overlayClose} onClick={onClose} aria-label="Close article">
+            ✕
+          </button>
+        </div>
+        <iframe
+          className={styles.overlayFrame}
+          src={url}
+          title="Article"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        />
+      </div>
+    </div>,
+    document.body,
+  );
+}
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -23,6 +60,7 @@ export default function NewsPanel() {
   // Local dismissed set — posts removed by "not interested" without refetch
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [overlayUrl, setOverlayUrl] = useState<string | null>(null);
   const touchStartX = useRef<number | null>(null);
 
   const visiblePosts: NewsPost[] = (data?.posts ?? []).filter(
@@ -82,31 +120,42 @@ export default function NewsPanel() {
   // ── Collapsed: scrollable list of all posts ────────────────────────────────
   if (!isFocused) {
     return (
-      <div className={styles.stackList}>
-        {visiblePosts.map((post, i) => (
-          <div
-            key={post.id}
-            className={[styles.stackItem, i > 0 ? styles.stackSep : '']
-              .filter(Boolean)
-              .join(' ')}
-            onClick={() => setCurrentIndex(i)}
-          >
-            {post.imageUrl && (
-              <img
-                className={styles.stackThumb}
-                src={post.imageUrl}
-                alt=""
-                loading="lazy"
-              />
-            )}
-            <div className={styles.stackText}>
-              <span className={styles.collapsedSource}>{post.source}</span>
-              <span className={styles.stackTitle}>{post.title}</span>
-              <span className={styles.stackTime}>{timeAgo(post.publishedAt)}</span>
+      <>
+        <div className={styles.stackList}>
+          {visiblePosts.map((post, i) => (
+            <div
+              key={post.id}
+              className={[styles.stackItem, i > 0 ? styles.stackSep : '']
+                .filter(Boolean)
+                .join(' ')}
+              onClick={() => setCurrentIndex(i)}
+            >
+              {post.imageUrl && (
+                <img
+                  className={styles.stackThumb}
+                  src={post.imageUrl}
+                  alt=""
+                  loading="lazy"
+                />
+              )}
+              <div className={styles.stackText}>
+                <span className={styles.collapsedSource}>{post.source}</span>
+                <span className={styles.stackTitle}>{post.title}</span>
+                <div className={styles.stackMeta}>
+                  <span className={styles.stackTime}>{timeAgo(post.publishedAt)}</span>
+                  <button
+                    className={styles.readMoreBtn}
+                    onClick={(e) => { e.stopPropagation(); setOverlayUrl(post.url); }}
+                  >
+                    Read more →
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+        {overlayUrl && <ArticleOverlay url={overlayUrl} onClose={() => setOverlayUrl(null)} />}
+      </>
     );
   }
 
@@ -139,15 +188,25 @@ export default function NewsPanel() {
           {current.description && (
             <div className={styles.description}>{current.description}</div>
           )}
-          <button
-            className={styles.dislikeBtn}
-            onClick={(e) => handleDislike(current, e)}
-            aria-label="Not interested in this article"
-          >
-            ✕ not interested
-          </button>
+          <div className={styles.cardActions}>
+            <button
+              className={styles.readMoreBtn}
+              onClick={(e) => { e.stopPropagation(); setOverlayUrl(current.url); }}
+            >
+              Read more →
+            </button>
+            <button
+              className={styles.dislikeBtn}
+              onClick={(e) => handleDislike(current, e)}
+              aria-label="Not interested in this article"
+            >
+              ✕ not interested
+            </button>
+          </div>
         </div>
       </div>
+
+      {overlayUrl && <ArticleOverlay url={overlayUrl} onClose={() => setOverlayUrl(null)} />}
 
       {/* Sidebar: switch between posts */}
       <div className={styles.sidebar}>
