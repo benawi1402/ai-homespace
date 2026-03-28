@@ -46,6 +46,40 @@
   overflow: hidden;
 }
 
+/* ── Collapsed preview groups ─────────────────────────────────────────────── */
+.previewList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.previewGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.previewDayLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-text-secondary);
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 1px;
+}
+
+.previewDayLabelToday {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
 /* ── Event row ────────────────────────────────────────────────────────────── */
 .eventRow {
   display: flex;
